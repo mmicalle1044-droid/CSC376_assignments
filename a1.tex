@@ -1,0 +1,194 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[total={6.5in,9in}]{geometry} % set text height and width: 1-in margins all around
+\title{Assignment 1 \\ CSC376, Fall 2024} % assignment title
+\date{October 3, 2024} % due date
+\author{ANGUS CHAO MING TSANG (1008077992), MATTHEW DEAN MICALLEF (1009512635)} %% your name here
+
+\usepackage{amsthm,amsmath,amssymb,amsfonts}
+\usepackage{enumerate} 
+\usepackage{hyperref} % package for in-text hyperlinks
+\hypersetup{colorlinks=true,
+linkcolor=blue,
+urlcolor=blue}
+
+\usepackage{graphicx}
+\usepackage{fancyhdr} % package for headers and footers
+\pagestyle{fancy}
+\rhead{Assignment 1}
+
+\begin{document}
+
+\maketitle
+\begin{enumerate}[{\bf (Q1)}]
+\item 
+
+%% QUESTION 1
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\linewidth]{image.png}
+    \caption{A palletizing robot receives boxes from a conveyor belt and places them on pallets for shipping.  }
+    \label{1}
+\end{figure}
+\textbf{Solution}:
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}[{1.}]
+\item Write down the transformation matrix $T_{w c}$ given the dimensions in Figure \ref{1}. \\
+
+The rotation from $w$ to $c$ is one by $\pi$ about the $z$ axis, so, using the guide from lecture we get our rotation matrix to be:
+\[
+\begin{bmatrix}
+-1 & 0 & 0 \\
+0 & -1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+\]
+And for $p$:
+\[
+\begin{bmatrix}
+F\\
+D\\
+E 
+\end{bmatrix}
+\]
+So, for $T_{wc}$, we have:
+\[
+\begin{bmatrix}
+-1 & 0 & 0 & F \\
+0 & -1 & 0 & D \\
+0 & 0 & 1 & E \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\]
+\item Write down the transformation matrix $T_{p_1 p_2}$
+given the dimensions in Figure \ref{1}. \\
+There is no change in rotation between $p_1$ and $p_2$ so our $R$ will be the default. For $p$, we have a translation along the y axis of magnitude $A + 4L$ in the negative $y$ direction. So, our $p$:
+\[
+\begin{bmatrix}
+0\\
+-A-4L\\
+0
+\end{bmatrix}
+\]
+So, for $T_{p_1 p_2}$, we have:
+\[
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -A-4L \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\]
+\item Determine the transformation matrix $T_{bc}$ as a product of known transformation matrices.\\
+
+In the prompt, we are given $T_{ws}$ and $T_{sb}$. Additionally, we calculated $T_{wc}$ in $1.1$. These three matrices are sufficient to calculate $T_{bc}$ using formulas from lecture, as seen below:
+\[T_{bc} = (T_{ws} T_{sb})^{-1}T_{wc} = (T_{wb})^{-1}T_{wc} = T_{bw}T_{wc} = T_{bc}\]
+\item Determine the transformation matrix $T_{p_1 box_1}$.\\
+
+From the diagram of a box given in the upper right corner of figure \ref{1}, we can see that from $p_1$ to $box_1$ there is a $\frac{\pi}{2}$ rotation about the $z$ axis which gives the following $R$:
+\[
+\begin{bmatrix}
+0 & -1 & 0 \\
+1 & 0 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+\]
+Additionally, there is movement in the $z$ and $x$ directions; respectively by $H$ and $5L$ which gives our $p$:
+\[
+\begin{bmatrix}
+5L\\
+0\\
+H
+\end{bmatrix}
+\]
+So, $T_{p_1 box_1}$ is:
+\[
+\begin{bmatrix}
+0 & -1 & 0 & 5L \\
+1 & 0 & 0 & 0 \\
+0 & 0 & 1 & H \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\]
+\item Determine the transformation matrix $T_{p_1 box_{16}}$.\\
+
+We have the same $R$ as in $1.4$ and the same $p$ except for the addition of a translation by $3L$ in the $y$ direction. So, altogether we have:
+\[
+\begin{bmatrix}
+0 & -1 & 0 & 5L \\
+1 & 0 & 0 & 3L \\
+0 & 0 & 1 & H \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\]
+
+\item Determine the location of Box 50 on Pallet 1 with respect to the box arrival location {c} on the conveyor belt,
+i.e. the transformation matrix $T_{c box_{50}}$ . \\
+
+First, we calculate $T_{p_1 box_{50}}$. We once again have the same $R$ but our $p$ is instead:
+\[
+\begin{bmatrix}
+L\\
+L\\
+2L+H
+\end{bmatrix}
+\]
+Which for $T_{p_1 box_{50}}$ gives us:
+\[
+\begin{bmatrix}
+0 & -1 & 0 & L \\
+1 & 0 & 0 & L \\
+0 & 0 & 1 & 2L + H \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\]
+Then, $T_{c box_{50}}$ can be acquired via known matrix multiplication:
+\[T_{c box_{50}} = (T_{wc})^{-1}T_{w p_1}T_{p_1 box_{50}} = T_{cw}T_{w p_1}T_{p_1 box_{50}} = T_{c box_{50}}\]
+\item Determine the location of Box 1 on Pallet 2 with respect to the robot’s space frame {s}, i.e. the transformation
+matrix $T_{s box_1}$. \\
+
+This can be acquired via known matrix multiplication:
+\[T_{s box_1} = (T_{ws})^{-1}T_{wp_1}T_{p_1 box_1} = T_{sw}T_{wp_1}T_{p_1 box_1} = T_{s box_1}\]
+\\\\
+%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\linewidth]{image2.png}
+    \caption{PRPR robot in its zero configuration with assigned link frames.  }
+    \label{2}
+\end{figure}
+%% QUESTION 2
+
+\item 
+\textbf{Solution}:
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}[{Row 1:}]
+    \item There is no change in the orientation between frame $0$ and frame $1$ so $\alpha_0$ and $\phi_0$ are both $0$. There is no movement in the $\Vec{x}_0$ direction so our $a_0$ is also $0$. Lastly, there is a $L_0$ translation in the positive $\Vec{z}_1$ direction from $\Vec{x}_0$ to $\Vec{x}_1$ but we also have a prismatic joint so $d_1$ is $L_0 + \theta_1$
+    \item From $\Vec{z}_{1}$ to $\Vec{z}_{2}$ there is a $\frac{\pi}{2}$ rotation about $\Vec{x}_1$ so, $\alpha_1$ is $\frac{\pi}{2}$. From $\Vec{x}_{1}$ to $\Vec{x}_{2}$ there is also a $\frac{\pi}{2}$ rotation about $\Vec{z}_2$ while in zero position. The second joint is revolute with $\theta_2$, so, $\phi_2$ is $\theta_2 + \frac{\pi}{2}$. From $\Vec{z}_{1}$ to $\Vec{z}_{2}$ there is a $L_1$ movement in the $\Vec{x}_1$ direction so, $a_1$ is $L_1$. Lastly, There is no movement from $\Vec{x}_{1}$ to $\Vec{x}_{2}$ in the $\Vec{z}_2$ direction so $d_2$ is $0$.
+    \item From $\Vec{z}_{2}$ to $\Vec{z}_{3}$ there is a $\frac{\pi}{2}$ rotation about $\Vec{x}_2$ so, $\alpha_2$ is $\frac{\pi}{2}$. From $\Vec{x}_{2}$ to $\Vec{x}_{3}$ there is also a $\frac{\pi}{2}$ rotation about $\Vec{z}_3$ so $\phi_3$ is $\frac{\pi}{2}$. From $\Vec{z}_{2}$ to $\Vec{z}_{3}$ there is no movement in the $\Vec{x}_2$ direction, so $a_2$ is 0. Lastly, there is a $L_2$ translation in the positive $\Vec{z}_3$ direction from $\Vec{x}_2$ to $\Vec{x}_3$ but we also have a prismatic joint so $d_3$ is $L_2 + \theta_3$
+    \item From frame $3$ to frame $4$ there is no change in orientation so, $\alpha_3$ and $\phi_4$ are $0$. From $\Vec{z}_{3}$ to $\Vec{z}_{4}$ there is no movement in the $\Vec{x}_3$ direction so, $a_3$ is $0$. Lastly, There is $L_3$ movement from $\Vec{x}_{3}$ to $\Vec{x}_{4}$ in the $\Vec{z}_4$ direction so $d_4$ is $L_3$.
+\end{enumerate}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+i  & \(\alpha_{i-1}\) & \(a_{i-1}\) & \(d_i\) & \(\phi_i\) \\ \hline
+1           & \(0\)         & \(0\)   & \(L_0 + \theta_1\) & \(0\)         \\ \hline
+2           & \(\frac{\pi}{2}\) & \(L_1\) & \(0\)   & \(\theta_2 + \frac{\pi}{2}\) \\ \hline
+3           & \(\frac{\pi}{2}\)   & \(0\)   & \(L_2 + \theta_3\) & \(\frac{\pi}{2}\) \\ \hline
+4           & \(0\)         & \(0\)   & \(L_3\) & \(\theta_4\)         \\ \hline
+\end{tabular}
+\caption{DH Parameters}
+\end{table}
+
+\end{enumerate}
+\end{enumerate}
+\end{document}
+
+
+
+
