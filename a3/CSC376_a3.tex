@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[total={6.5in,9in}]{geometry} % set text height and width: 1-in margins all around
+\title{Assignment 3 \\ CSC376, Fall 2024} % assignment title
+\date{November 4, 2024} % due date
+\author{ANGUS CHAO MING TSANG (1008077992), MATTHEW DEAN MICALLEF (1009512635)} %% your name here
+
+\usepackage{amsthm,amsmath,amssymb,amsfonts}
+\usepackage{enumerate} 
+\usepackage{hyperref} % package for in-text hyperlinks
+\hypersetup{colorlinks=true,
+linkcolor=blue,
+urlcolor=blue}
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{fancyhdr} % package for headers and footers
+\pagestyle{fancy}
+\rhead{Assignment 3}
+
+\begin{document}
+
+\maketitle
+
+\section*{Question 1}
+
+\begin{enumerate}%[{\bf (Q1)}]
+    \item The RPR robot in Figure 1 is shown in its zero position, with the end-effector position p indicated by the black circle. The
+joint ranges for the robot are $\theta_1 = [0, 2\pi)$, $\theta_2 = [0, L\sqrt{2}]$, and $\theta_3 = [0, \pi]$. Solve the inverse kinematics problem analytically
+and explicitly state all solutions for $\theta_1$, $\theta_2$, and $\theta_3$ given a desired end-effector position $p = (p_x, p_y, p_z)$
+T
+specified in the
+robot’s base frame ${s}$. 
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.75\linewidth]{image1.png}
+        \caption{Figure 1: RPR robot in its zero position.}
+        \label{fig:1}
+    \end{figure}
+
+Observing the distal end of the robot, we can immediately see, that the z-coordinate of point p is only
+affected by $\theta_2$. Therefore, we can determine $\theta_2$ using simple geometric relationships. We start be determining the length of the link which $\theta_2$ is on, $a$, in its zero position:
+\[
+a^2 = 2L^2 
+\]\[
+a = \sqrt{2}L
+\]
+Then for $p_z$ we have:
+\[
+p_z = cos(45)\times (\sqrt{2}L + \theta_2) + 2L
+\]
+Which we rearrange to solve for $\theta_2$:
+\[
+\frac{p_z - 2L}{cos45} - \sqrt{2}L = \theta_2 \newline
+\]\[
+\theta_2 = \frac{2p_z - 6L}{\sqrt{2}}
+\]
+To determine the remaining joint values $\theta_1$ and $\theta_2$, we consider the top down view of the robot manipulator:
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{image.png}
+
+    \label{fig:2}
+\end{figure}
+We can calculate the lengths of the resulting triangle as follows:
+
+\begin{center}
+    L is the side length given to us and does not change.
+\end{center}
+\[
+D = \sqrt{p_x^2 + p_y^2}
+\]
+And the last side is:
+\[
+\cos{45}\times (\sqrt{2}L + \theta_2) = p_z -2L
+\]
+Using the law of cosine, we can now calculate the angles $\theta_3$ and of the resulting triangle $\alpha$ and $\beta$. The general form of the law of cosine for a triangle with the three edges a, b, c and three angles $\alpha, \beta, \gamma$ is stated as:
+\[ \cos^{-1}{(\frac{a^2 + b^2 - c^2}{2ab})} = \gamma
+\]
+where $\gamma$ is the angle opposite of edge c. Applying this to our triangle and solving for $\theta_3$ yields:
+\[
+\theta_3 = \cos^{-1}{(\frac{L^2 + p_z^2 -4Lp_z + 4L^2 - p_x^2- p_y^2}{2L(p_z-2L)})}
+\]
+Applying this to our triangle and solving for $\alpha$ and $\beta$ yields:
+\[\alpha = \cos^{-1}{(\frac{p_z^2 -4Lp_z +4L^2 + p_x^2 + p_y^2 - L^2}{2(\sqrt{p_x^2+p_y^2})(p_z-2L)})}\] 
+\[
+\beta = atan2(p_y, p_x)
+\]
+
+Using these two angles, we can now determine the remaining joint angle as:
+\[\theta_1 = \alpha + \beta \]
+In summary:
+\[\theta_1 = \alpha + \beta \]
+\[
+\theta_2 = \frac{2p_z - 6L}{\sqrt{2}}
+\]
+\[
+\theta_3 = \cos^{-1}{(\frac{L^2 + p_z^2 -4Lp_z + 4L^2 - p_x^2- p_y^2}{2L(p_z-2L)})}
+\]
+
+These values are valid for the displayed ’elbow-up’ configuration. Note, that there is no ’elbow-down’
+configuration, that leads to the same point p. This is because $\theta_3 = [0, \pi]$ which makes an ’elbow-down’ configuration impossible. Furthermore, note that when $p = (0,0,3L)$, $\theta_1$ can be any valid value while $\theta_2$ and $\theta_3$ must be 0.
+
+\end{enumerate}
+
+\section*{Question 3}
+\begin{enumerate}%[{\bf (Q2)}]
+    \item A planar 2R robot is executing a trajectory $\theta$(t) to move from $\theta_{start} = [180^{\circ}, 0^{\circ}]$ to $\theta_{end} = [30^{\circ}, 225^{\circ}]$. This trajectory is
+    defined by a straight-line path motion in joint space, such that 
+    $\theta(s) = \theta_{start} + s(\theta_{end} - \theta_{start}), s \in [0, 1]$. To move
+along this straight-line path, three different time scaling methods s(t) can be used, resulting in three different possible
+trajectories $\theta(t)$: (1) third-order polynomial time scaling, (2) fifth-order polynomial time scaling and (3) trapezoidal
+time scaling.
+For each of these three resulting trajectories, we plotted the joint velocities ˙$\theta$ (rad/s) and joint accelerations ¨$\theta$
+(rad/$s^2$) for both joints $\theta_1$ (dotted lines) and $\theta_2$ (dashed lines) of the 2R robot. The resulting plots are shown below
+unordered and unlabeled.
+Assign each plot (A to F) to the corresponding time scaling method (third-order polynomial, fifth-order polynomial
+and trapezoidal) and variable ( ˙$\theta$ and ¨$\theta$). Discuss and compare the three time scaling methods, naming at least one
+advantage and one disadvantage for each of them.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{image3.png}
+    \label{fig:3}
+\end{figure}
+\\
+From $A$ to $F$, we have 5th order ¨$\theta$, 3rd order ˙$\theta$, trapezoidal ¨$\theta$, trapezoidal ˙$\theta$, 3rd order ¨$\theta$, and 5th order ˙$\theta$.\\
+With the 3rd order polynomial graphs, we have a very abrupt start and top with no real warm-up since acceleration doesn't start at 0, they are however very easy to compute. With the 5th order polynomial graphs, we have a much smoother and gradual start than we do with the 3rd order polynomial one since their acceleration starts at 0 but they are harder to compute. With trapezoidal time scaling, the acceleration is maxed out until the velocity limit is reached and then the deceleration is maxed out so that velocity is zero once the joint has reached its desired end. This makes the motion typically much faster than the other time-scaling methods but these abrupt and rapid accelerations can put a lot of strain on the robot itself.
+
+\item What is the minimum time duration T in seconds for a trapezoidal time scaling trajectory with $q_{start} = $ 50 deg and
+$q_{end} = $ 300 deg for a robot joint with maximum joint velocity 25 deg/s and maximum acceleration 50 deg/$s^2$.
+\\
+The joint needs to shift by 250 deg and will take half a second to reach its max velocity. It will also take half a second to decelerate at the end of its motion. In this initial and final acceleration and deceleration, the joint will shift by 12.5 deg in a total of one second. This means that while the velocity is maxed out, the joint will shift by 237.5 deg. $\frac{237.5}{25}=9.5$ which gives us a total of 10.5 seconds as our minimum duration for a trapezoidal time scaling trajectory.
+
+
+
+\end{enumerate}
+
+\end{document}

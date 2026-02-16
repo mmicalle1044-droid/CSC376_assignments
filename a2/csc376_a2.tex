@@ -1,0 +1,98 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[total={6.5in,9in}]{geometry} % set text height and width: 1-in margins all around
+\title{Assignment 2 \\ CSC376, Fall 2024} % assignment title
+\date{October 16, 2024} % due date
+\author{ANGUS CHAO MING TSANG (1008077992), MATTHEW DEAN MICALLEF (1009512635)} %% your name here
+
+\usepackage{amsthm,amsmath,amssymb,amsfonts}
+\usepackage{enumerate} 
+\usepackage{hyperref} % package for in-text hyperlinks
+\hypersetup{colorlinks=true,
+linkcolor=blue,
+urlcolor=blue}
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{fancyhdr} % package for headers and footers
+\pagestyle{fancy}
+\rhead{Assignment 1}
+
+\begin{document}
+
+\maketitle
+
+\section*{Question 2}
+
+\begin{enumerate}%[{\bf (Q2)}]
+    \item Consider the RRPR manipulator depicted in its zero position in Figure \ref{fig:1}. Derive the Jacobian which allows you to determine the spatial twist $\mathcal{V}_s$ for arbitrary joint space velocities $\dot{\theta} \in \mathbb{R}^4$
+
+    \textbf{Note:} For joint 4 only, you are not required to perform the matrix/vector multiplication or numerical evaluation. Instead, for joint 4, focus on correctly setting up equations for $\omega_4$ and $v_4$ with appropriate matrices.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.75\linewidth]{image1.png}
+        \caption{RRPR manipulator in its zero position.}
+        \label{fig:1}
+    \end{figure}
+
+    The spacial twist , $\mathcal{V}_s$, is equal to $J_s(\theta)\dot{\theta}$ with $$J_s(\theta) = [J_{s1} \quad J_{s2}(\theta) \quad J_{s3}(\theta) \quad J_{s4}(\theta)] \in \mathbb{R}^{6 \times 4}$$
+
+    \textbf{Joint 1}:
+    \begin{align*}
+        \omega_1 &= (0, 0, 1) \\
+        q_1 &= (0, 0, L_1) \\
+        v_1 &= -\omega_1 \times q_1 \\
+        &= (0, 0, 0)
+    \end{align*}
+
+    \textbf{Joint 2}:
+    \begin{align*}
+        \omega_2 &= Rot(\hat{z}, \theta_1)[0, 1, 0]^T \\
+        &= (-s_1, c_1, 0) \\
+        q_2 &= Rot(\hat{z}, \theta_1)[L_2, 0, L_1]^T \\
+        &= (L_2c_1, L_2s_1, L_1) \\
+        v_2 &= -\omega_2 \times q_2 \\
+        &= (-c_1L_1, -s_1L_1, L_2(c_1^2 + s_1^2))\\
+        &= (-c_1L_1, -s_1L_1, L_2)
+    \end{align*}
+
+    \textbf{Joint 3}:
+    \begin{align*}
+        \omega_3 &= (0, 0, 0) \\
+        v_3 &= Rot(\hat{z}, \theta_1)Rot(\hat{y}, \theta_2)[1, 0, 0]^T \\
+        &= Rot(\hat{z}, \theta_1)[c_2, 0, -s_2]^T \\
+        &= (c_1c_2, s_1c_2, -s_2)
+    \end{align*}
+
+    \textbf{Joint 4}:
+    \begin{align*}
+        \omega_4 &= \omega_2 = (-s_1, c_1, 0) \\
+        q_4 &= q_2 + Rot(\hat{z}, \theta_1)Rot(\hat{y}, \theta_2)[L_3 + L_4 + \theta_3, 0, 0]^T \\
+        v_4 &= -\omega_4 \times q_4
+    \end{align*}
+    
+    $$
+    J_s(\theta) = \begin{bmatrix}
+                    0 & -s_1 & 0 & -s_1 \\
+                    0 & c_1 & 0 & c_1 \\
+                    1 & 0 & 0 & 0 \\
+                    0 & -c_1L_1 & c_1c_2 & -\omega_4 \times q_4 \\
+                    0 & -s_1L_1 & s_1c_2 &  \\
+                    0 & L_2 & -s_2 &  
+                  \end{bmatrix}
+    $$
+    \pagebreak
+
+    \item Refer to Figure \ref{fig:2}, which depicts the Franka Emika Panda robot in a specific joint configuration. After computing the robot’s body Jacobian for this configuration, the angular velocity manipulability ellipsoid is illustrated on the right of Figure \ref{fig:2}. Write a detailed analysis of the manipulability ellipsoid by addressing its characteristics and the implications for the robot’s motion.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.75\linewidth]{image2.png}
+        \caption{Franka Emika Panda robot shown from the side (left) and the corresponding angular velocity manipulability ellipsoid.}
+        \label{fig:2}
+    \end{figure}
+
+    The manipulability ellipsoid of the Franka Emika Panda robot is significantly stretched in the Y-direction, indicating a high capability for rapid and precise movements along this axis. However, the compression observed in the X and Z directions suggests that the robot is approaching a singular configuration, where the Jacobian matrix loses rank and restricts motion in those axes. This proximity to singularity can lead to a decreased ability to control the end effector’s position and orientation, resulting in challenges during tasks that require lateral or vertical movements. As the robot nears singularity, it may experience increased sensitivity to disturbances and diminished control authority, making precise manipulation more difficult.
+    
+\end{enumerate}
+
+\end{document}
